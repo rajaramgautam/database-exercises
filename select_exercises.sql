@@ -53,7 +53,6 @@ where sales < 20;
 
 # f. All the albums with a genre of "Rock". Why do these query results not include albums with a genre of "Hard rock" or "Progressive rock"?
 
--- Answer: Because they are not identical strings.
+--  Answer: Because they are not identical strings.
 
-
-  
+  select genre from albums where genre = 'rock';
