@@ -167,8 +167,8 @@ WHERE last_name LIKE 'E%' and last_name LIKE '%E'
 ORDER BY emp_no;
 /*
 899
-First Row: Irena Acton
-Last Row:  Maya Zyda
+First Row: Ramzi Erde
+Last Row:  Tadahiro Erde
 
 */
 
@@ -183,8 +183,8 @@ ORDER BY hire_date desc;
 
 /*
 899
-First Row: Teiji Eldridge
-Last Row:  Sergi Erde
+First Row: Teiji Eldridge (The Newest Employee by Hire Date)
+Last Row:  Sergi Erde (The Oldest Employee by Hire Date)
 
 */
 
@@ -192,7 +192,7 @@ Last Row:  Sergi Erde
 SELECT * FROM employees
 WHERE (hire_date between '1990-01-01' and '1999-12-31')
      and birth_date like '%-12-25'
-     order by hire_date;
+     order by birth_date, hire_date desc;
 
 SELECT count(*) FROM employees
 WHERE (hire_date between '1990-01-01' and '1999-12-31')
@@ -201,7 +201,7 @@ WHERE (hire_date between '1990-01-01' and '1999-12-31')
      
      /*
 362
-First Row: Aselmn Cappello
-Last Row: Khun Bernini
+First Row: Khun Bernini
+Last Row: Douadi Pettis
 
 */
