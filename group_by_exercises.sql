@@ -42,9 +42,10 @@ having last_name like '%q%' and
 
 # 7. Find all all employees with first names 'Irena', 'Vidya', or 'Maya'. Use COUNT(*) and GROUP BY to find the number of employees for each gender with those names.
 
-select first_name, count(*) as counting_repetition from employees
-group by first_name
-having first_name in ('Irena', 'Vidya', 'Maya');
+SELECT first_name AS 'First Name', sum(gender='M') AS 'MALES', sum(gender='F') AS 'FEMALES' -- SUM will take an argument where count() won't?
+FROM employees
+WHERE first_name IN('Irena', 'Vidya','Maya') 
+GROUP BY first_name;
 
 # 8. Using your query that generates a username for all of the employees, generate a count employees for each unique username. Are there any duplicate usernames? BONUS: How many duplicate usernames are there?
 
