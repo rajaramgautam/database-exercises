@@ -282,6 +282,7 @@ JOIN departments AS d
 WHERE dm.to_date = '9999-01-01'
 order by dept_name;
 
+-- Full Name
 SELECT CONCAT(e.first_name, ' ', e.last_name) AS full_name
 FROM employees AS e
 JOIN dept_manager AS dm
@@ -293,7 +294,7 @@ order by dept_name;
  
  
  
- select CONCAT(e.first_name, ' ', e.last_name) AS Employee_full_name, dept_name
+ select CONCAT(e.first_name, ' ', e.last_name) AS Employee_full_name, dept_name, 
  from employees as e
  join dept_manager as dm on e.emp_no = dm.emp_no
  join departments as d on d.dept_no = dm.dept_no;
