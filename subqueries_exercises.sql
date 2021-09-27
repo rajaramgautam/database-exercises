@@ -20,13 +20,24 @@ select * from employees;
 select * from salaries;
 select * from titles;
 
-select title from titles as t
-join employees as e on t.emp_no = e.emp_no
-where to_date > curdate() and e.first_name = 'Aamod';
+-- select title, first_name from titles as t
+-- join employees as e on t.emp_no = e.emp_no
+-- where to_date > curdate() and e.first_name = 'Aamod';
 
-select e.first_name, title from titles as t
-join employees as e on t.emp_no = e.emp_no
-where to_date > curdate() and e.first_name = 'Aamod';
+-- select e.first_name, title from titles as t
+-- join employees as e on t.emp_no = e.emp_no
+-- where to_date > curdate() and e.first_name = 'Aamod';
+
+
+select title
+ from titles
+ where emp_no IN (
+    select emp_no
+    from employees
+    join dept_emp using(emp_no)
+    where first_name = 'aamod'
+    and to_date > now()
+ );
 
 # 3. How many people in the employees table are no longer working for the company? Give the answer in a comment in your code.
 select * from departments;
@@ -36,17 +47,35 @@ select * from employees;
 select * from salaries;
 select * from titles;
 
-select count(*) as ex_employees from titles as t
-join employees as e on t.emp_no = e.emp_no
-where to_date < curdate();
+-- select count(*) as ex_employees from titles as t
+-- join employees as e on t.emp_no = e.emp_no
+-- where to_date < curdate();
 
---203184
+-- 203184
 
-select count(*) as ex_employees from salaries as s
-join employees as e on s.emp_no = e.emp_no
-where to_date < curdate();
+-- select count(*) as ex_employees from salaries as s
+-- join employees as e on s.emp_no = e.emp_no
+-- where to_date < curdate();
 
 -- 2603923
+
+
+select count(*) from employees
+ where emp_no not in 
+ 	(select emp_no
+ 	from dept_emp
+ 	where to_date > now()
+ );
+ -- Same solution using 'salaries' table:
+ select count(*)
+ from employees
+ where emp_no NOT IN
+ 	(
+ 	select emp_no
+ 	from salaries
+ 	where to_date > now()
+ 	);
+
 
 
 # 4. Find all the current department managers that are female. List their names in a comment in your code.
@@ -73,6 +102,18 @@ join employees as e on s.emp_no = e.emp_no
 where to_date > curdate() and salary > (select avg(salary) from salaries);
 
 
+select first_name, last_name, emp_no
+ from employees
+ join dept_emp de using(emp_no)
+ where de.to_date > now() 
+ and emp_no IN
+ (
+ 	select emp_no
+ 	from salaries
+ 	where salary > (select avg(salary) from salaries)
+
+ );
+
 
 # 6. How many current salaries are within 1 standard deviation of the current highest salary? (Hint: you can use a built in function to calculate the standard deviation.) What percentage of all salaries is this?
 
@@ -94,24 +135,58 @@ select max(salary) - (select stddev(salary) from salaries
 where to_date > curdate()) from salaries
 where to_date > curdate();
 
+--140910.040
+
 
 -- Number of salaries with in that range
 
 select count(*) from salaries 
-where salary < 
+where salary <=
 (
 select max(salary) from salaries
 where to_date > curdate()
 )
- and salary >
+ and salary >=
  (
  select max(salary) - (select stddev(salary) from salaries
 where to_date > curdate()) from salaries
 where to_date > curdate()
  )
-and to_date > curdate();
+and to_date > curdate() as e;
 
---82
+--83
+total current employees
+select count(*) from salaries where to_date > curdate();
+
+--240124
+select( 
+(select count(*) from salaries 
+where salary <=
+(
+select max(salary) from salaries
+where to_date > curdate()
+)
+ and salary >=
+ (
+ select max(salary) - (select stddev(salary) from salaries
+where to_date > curdate()) from salaries
+where to_date > curdate()
+ )
+and to_date > curdate()) 
+/
+(
+select count(*) from salaries where to_date > curdate())) * 100 as percentage;
+
+
+select((select count(*)
+ from salaries
+ where to_date > now()
+ and salary > (
+ (select max(salary) from salaries where to_date > now()) - 
+ (select std(salary) from salaries where to_date > now())
+ ))/(select count(*)
+ from salaries 
+ where to_date > now())) * 100 as "percentage of salaries within 1 Stdev of Max";
 
 # 7. Hint Number 1 You will likely use a combination of different kinds of subqueries.
 # 8. Hint Number 2 Consider that the following code will produce the z score for current salaries.
