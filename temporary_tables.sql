@@ -52,13 +52,55 @@ select * from employees;
 select * from salaries;
 select * from titles;
 
-
 -- Current average pay
-select dept_name, avg(salary) as current_average from salaries as s 
+create temporary table hopper_1557.current_avaerage as select dept_name, avg(salary) as current_average from salaries as s 
 join dept_emp de using(emp_no)
 join departments d using(dept_no)
 where s.to_date > curdate()
 group by dept_name;
+
+select * from hopper_1557.current_avaerage ;
+
+select avg(salary) from salaries;
+
+select stddev(salary) from salaries;
+
+
+ ALTER TABLE hopper_1557.current_avaerage ADD avg_sal float;
+ ALTER TABLE hopper_1557.current_avaerage ADD std_sal float;
+ update hopper_1557.current_avaerage
+ 	set avg_sal = (select avg(salary) from salaries); 
+ update hopper_1557.current_avaerage
+ 	set std_sal = (select stddev(salary) from salaries);
+ 	select * from hopper_1557.current_avaerage ;
+ 	
+ 	select dept_name, current_average, avg_sal, std_sal, (current_average - avg_sal)/std_sal as z_score   from
+ 	hopper_1557.current_avaerage
+ 	order by z_score;
+ 	
+ 	-- Thus, sales is based and Human Resources is the worst one based on salary.
+ 	
+ 	
+ 	
+ /*	
+-- Historic Average Pay and Standard Deviation of salary
+
+select avg(salary) from salaries;
+
+select stddev(salary) from salaries;
+
+select dept_name, current_average, (current_average - (select avg(salary) from salaries))/
+(select stddev(salary) from salaries as b) as z-score
+
+from (select dept_name, avg(salary) as current_average from salaries as s 
+join dept_emp de using(emp_no)
+join departments d using(dept_no)
+where s.to_date > curdate()
+group by dept_name);
+
+
+
+
 -- current average and standard deviation
 
 select dept_name, avg(salary) as current_average from salaries as s 
@@ -109,6 +151,6 @@ join salaries s using(emp_no)
 group by dept_name) as g ;
 
 -- Based on z-score, Human Resources is best and sales is the worst one.
+*/
 
 
--- Ans.: - Sales
