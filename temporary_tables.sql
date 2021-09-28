@@ -5,14 +5,19 @@
 CREATE TEMPORARY TABLE hopper_1557.employees_with_departments AS
 SELECT first_name, last_name, dept_name
 FROM employees
-JOIN dept_emp USING(emp_no)
-JOIN departments USING(dept_no);
+JOIN dept_emp dm USING(emp_no)
+JOIN departments USING(dept_no)
+WHERE to_date > curdate();
+
+drop table hopper_1557.employees_with_departments; 
 
 select * from hopper_1557.employees_with_departments;
 desc hopper_1557.employees_with_departments;
 
 select * from dept_emp;
 select * from departments;
+
+select * from employees;
 
 -- Add a column named full_name to this table. It should be a VARCHAR whose length is the sum of the lengths of the first name and last name columns
 alter table hopper_1557.employees_with_departments add full_name varchar(90);
@@ -34,6 +39,10 @@ select * from hopper_1557.employees_with_departments;
 -- select * from payment;
 create temporary table hopper_1557.payment_new as 
 select * from payment; 
+
+select * from hopper_1557.payment_new;
+
+-- Write the SQL necessary to transform the amount column such that it is stored as an integer representing the number of cents of the payment. For example, 1.99 should become 199.
 
 alter table hopper_1557.payment_new add column number_of_cents int;
 -- select * from hopper_1557.payment_new;
