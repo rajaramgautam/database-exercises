@@ -60,13 +60,14 @@ join departments d using(dept_no)
 where s.to_date > curdate()
 group by dept_name;
 -- current average and standard deviation
-select dept_name, avg(salary) as current_average, stddev(salary) as std_cur_salary from salaries as s 
+
+select dept_name, avg(salary) as current_average from salaries as s 
 join dept_emp de using(emp_no)
 join departments d using(dept_no)
 where s.to_date > curdate()
 group by dept_name;
 
--- Sales
+
 
 
 -- Historic average pay
@@ -80,6 +81,34 @@ select dept_name, avg(salary) as historic_average, stddev(salary) as std_his_sal
 join dept_emp de using(emp_no)
 join departments d using(dept_no)
 group by dept_name;
+
+-- Historic average pay, historic standard deviation, current average
+select dept_name, avg(salary) as historic_average, stddev(salary) as std_his_salary, current_average from 
+
+(select dept_name, avg(salary) as current_average from salaries as s 
+join dept_emp de using(emp_no)
+join departments d using(dept_no)
+where s.to_date > curdate()
+group by dept_name) as f
+join departments d using(dept_name)  
+join dept_emp de using(dept_no)
+join salaries s using(emp_no)
+group by dept_name;
+
+-- Historic average pay, historic standard deviation, current average and z-score
+select dept_name, historic_average, std_his_salary, current_average, (current_average - historic_average)/std_his_salary from (select dept_name, avg(salary) as historic_average, stddev(salary) as std_his_salary, current_average from 
+
+(select dept_name, avg(salary) as current_average from salaries as s 
+join dept_emp de using(emp_no)
+join departments d using(dept_no)
+where s.to_date > curdate()
+group by dept_name) as f
+join departments d using(dept_name)  
+join dept_emp de using(dept_no)
+join salaries s using(emp_no)
+group by dept_name) as g ;
+
+-- Based on z-score, Human Resources is best and sales is the worst one.
 
 
 -- Ans.: - Sales
