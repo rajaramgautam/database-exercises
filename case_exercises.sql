@@ -59,7 +59,7 @@ from employees) as e ;
 -- BONUS
 
 # 1. What is the current average salary for each of the following department groups: R&D, Sales & Marketing, Prod & QM, Finance & HR, Customer Service?
-SELECT dept_name,
+SELECT 
        CASE 
            WHEN dept_name IN ('research', 'development') THEN 'R&D'
            WHEN dept_name IN ('sales', 'marketing') THEN 'Sales & Marketing' 
@@ -67,7 +67,38 @@ SELECT dept_name,
            	  WHEN dept_name IN ('Finance', 'Human Resources') THEN 'Finance & HR'
            ELSE dept_name
            END AS dept_group
-FROM departments;
+           
+FROM departments
+group by dept_group;
+
+SELECT 
+       CASE 
+           WHEN dept_name IN ('research', 'development') THEN 'R&D'
+           WHEN dept_name IN ('sales', 'marketing') THEN 'Sales & Marketing' 
+           WHEN dept_name IN ('Production', 'Quality Management') THEN 'Prod & QM'
+           	  WHEN dept_name IN ('Finance', 'Human Resources') THEN 'Finance & HR'
+           ELSE dept_name
+           END AS dept_group,
+           avg(salary)
+           
+FROM departments
+join dept_emp using(dept_no)
+join salaries using(emp_no)
+group by dept_group;
+
+select * from salaries;
+select * from departments;
+select * from dept_emp;
+
+
+create temporary table hopper_1557.currentavg as 
+select dept_name, avg(salary) as current_average from salaries as s 
+join dept_emp de using(emp_no)
+join departments d using(dept_no)
+where s.to_date > curdate()
+group by dept_name;
+
+select * from hopper_1557.currentavg; 
 
 
 SELECT * FROM salaries;
