@@ -11,22 +11,19 @@ select * from departments;
 select * from employees;
 select * from dept_emp;
 
-	select e.emp_no, dept_no, hire_date, to_date,
-		case to_date 
-			when to_date > curdate() then 1
-			else 0
-			end as is_current_employee
-			
-	from employees as e
-	join dept_emp as de on e.emp_no = de.emp_no;
 	
 	
-	select emp_no, dept_no, hire_date, to_date, case
-	when to_date > curdate() then 1
+	select emp_no, dept_no, hire_date, s.to_date, de.to_date, case
+	when s.to_date > curdate() and de.to_date > curdate() then 1
 	else 0
 	end as still_employed
-from employees
-join dept_emp using (emp_no);
+from employees e 
+join dept_emp de using(emp_no)
+join salaries s using(emp_no);
+
+select * from salaries;
+select * from employees;
+select * from dept_emp;
 
 # 2. Write a query that returns all employee names (previous and current), and a new column 'alpha_group' that returns 'A-H', 'I-Q', or 'R-Z' depending on the first letter of their last name.
 
